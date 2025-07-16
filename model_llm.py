@@ -1,22 +1,18 @@
-import os
-from huggingface_hub import InferenceClient
+from transformers import pipeline
 
-hf_token = os.getenv("HF_TOKEN")
-client = InferenceClient(provider="fireworks-ai", api_key=hf_token)
+# Buat pipeline-nya
+pipe = pipeline(
+    "text-generation",
+    model="HuggingFaceH4/zephyr-7b-beta",
+    max_new_tokens=128,
+    do_sample=True,
+    temperature=0.7,
+)
 
-def get_bot_reply(user_input, chat_history=None):
-    messages = []
+def get_bot_reply(user_input, history=None):
+    # Gabungkan history kalau ada (belum pakai memory permanen ya)
+    prompt = user_input
+    response = pipe(prompt)
+    reply_text = response[0]['generated_text'].replace(prompt, '').strip()
+    return reply_text, history
 
-    # History (jika mau disimpan, bisa pakai st.session_state nanti)
-    if chat_history:
-        messages.extend(chat_history)
-
-    messages.append({"role": "user", "content": user_input})
-
-    completion = client.chat.completions.create(
-        model="meta-llama/Llama-3.1-8B-Instruct",
-        messages=messages,
-    )
-
-    reply = completion.choices[0].message.content
-    return reply, messages + [{"role": "assistant", "content": reply}]
