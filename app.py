@@ -22,7 +22,9 @@ if uploaded_file:
 import streamlit as st
 from model_llm import get_bot_reply
 
-st.title("🤖 Chatbot Sampah (LLaMA 3.1)")
+st.set_page_config(page_title="Chatbot Zephyr", page_icon="💬")
+
+st.title("🤖 Chatbot Sampah (Zephyr)")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -31,9 +33,9 @@ user_input = st.text_input("Tanya ke bot:")
 
 if user_input:
     with st.spinner("Bot sedang menulis..."):
-        reply, updated_history = get_bot_reply(user_input, st.session_state.chat_history)
-        st.session_state.chat_history = updated_history
-        st.markdown(f"**Bot:** {reply}")
+        bot_reply, updated_history = get_bot_reply(user_input, st.session_state.chat_history)
+        st.session_state.chat_history.append({"user": user_input, "bot": bot_reply})
+        st.markdown(f"**🤖 Bot:** {bot_reply}")
 
 
 
