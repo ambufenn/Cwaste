@@ -1,4 +1,10 @@
 import streamlit as st
+import sys
+import os
+
+# Tambahkan path ke root supaya bisa import model_llm
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from model_llm import get_bot_reply
 
 st.title("📜 Riwayat Transaksi")
