@@ -50,7 +50,7 @@ from pages import main_page, coin_page, history_page
 
 st.set_page_config(page_title="Sampah Bercuan", layout="centered")
 
-menu = st.selectbox("Pilih Halaman", ["Main", "Coin", "History"])
+menu = st.selectbox("📂 Pilih Halaman", ["Main", "Coin", "History"])
 
 if menu == "Main":
     main_page.run()
@@ -58,5 +58,6 @@ elif menu == "Coin":
     coin_page.run()
 elif menu == "History":
     history_page.run()
+
 
 
