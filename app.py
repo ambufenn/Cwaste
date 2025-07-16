@@ -44,70 +44,19 @@ for speaker, text in st.session_state.chat_history:
     st.markdown(f"**{speaker}:** {text}")
 '''
 
-#we try use html
-
+#we try use html gabung 3 halaman
 import streamlit as st
-from PIL import Image
-import tempfile
-
-from model_vlm import classify_image_from_file
-from model_llm import get_bot_reply
-
-hf_token = st.secrets["HF_TOKEN"]
+from pages import main_page, coin_page, history_page
 
 st.set_page_config(page_title="Sampah Bercuan", layout="centered")
 
-# CSS style for HTML
-st.markdown("""
-    <style>
-        .section { margin-top: 30px; }
-        .chat-message { margin-top: 10px; padding: 10px; border-radius: 5px; }
-        .user { background-color: #d9fdd3; }
-        .bot { background-color: #f0f0f0; }
-    </style>
-""", unsafe_allow_html=True)
+menu = st.selectbox("Pilih Halaman", ["Main", "Coin", "History"])
 
-menu = st.selectbox("Menu", ["Main", "Coin", "History"])
-
-# === MAIN ===
 if menu == "Main":
-    st.markdown("## 🖼️ Upload Trash Image")
-
-    uploaded_file = st.file_uploader("Upload image of trash", type=["jpg", "jpeg", "png"])
-    if uploaded_file:
-        img = Image.open(uploaded_file)
-        st.image(img, caption="Uploaded Image", use_column_width=True)
-
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp:
-            img.save(temp.name)
-            label = classify_image_from_file(temp.name, token=hf_token)
-        st.success(f"🧠 Detected: **{label}**")
-
-    # === CHAT ===
-    st.markdown('<div class="section"><h3>🤖 Ask About the Trash</h3></div>', unsafe_allow_html=True)
-    prompt = st.chat_input("Tanya ke chatbot")
-    if prompt:
-        response = get_bot_reply(prompt)
-        with st.chat_message("user"):
-            st.markdown(f'<div class="chat-message user">🧍 {prompt}</div>', unsafe_allow_html=True)
-        with st.chat_message("bot"):
-            st.markdown(f'<div class="chat-message bot">🤖 {response}</div>', unsafe_allow_html=True)
-
-# === COIN ===
+    main_page.run()
 elif menu == "Coin":
-    st.markdown("## 💰 Your eWallet Balance")
-    st.info("Fitur ini sedang dikembangkan.")
-
-# === HISTORY ===
+    coin_page.run()
 elif menu == "History":
-    st.markdown("## 🕘 Transaction History")
-    st.info("Transaksi akan ditampilkan setelah fitur aktif.")
+    history_page.run()
 
-    st.markdown('<div class="section"><h3>🧾 Ask About History</h3></div>', unsafe_allow_html=True)
-    prompt = st.chat_input("Tanya tentang riwayatmu")
-    if prompt:
-        response = get_bot_reply(prompt)
-        with st.chat_message("user"):
-            st.markdown(f'<div class="chat-message user">🧍 {prompt}</div>', unsafe_allow_html=True)
-        with st.chat_message("bot"):
-            st.markdown(f'<div class="chat-message bot">🤖 {response}</div>', unsafe_allow_html=True)
+
