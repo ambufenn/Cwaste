@@ -22,20 +22,20 @@ if uploaded_file:
 import streamlit as st
 from model_llm import get_bot_reply
 
-st.set_page_config(page_title="Chatbot Zephyr", page_icon="💬")
-
-st.title("🤖 Chatbot Sampah (Zephyr)")
+st.set_page_config(page_title="Chatbot Zephyr", page_icon="🤖")
+st.title("💬 Chatbot Sampah (Zephyr-7B)")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-user_input = st.text_input("Tanya ke bot:")
+user_input = st.text_input("Tanya sesuatu:")
 
 if user_input:
-    with st.spinner("Bot sedang menulis..."):
-        bot_reply, updated_history = get_bot_reply(user_input, st.session_state.chat_history)
-        st.session_state.chat_history.append({"user": user_input, "bot": bot_reply})
-        st.markdown(f"**🤖 Bot:** {bot_reply}")
+    with st.spinner("Menjawab..."):
+        bot_reply, _ = get_bot_reply(user_input)
+        st.session_state.chat_history.append(("🧑 Kamu", user_input))
+        st.session_state.chat_history.append(("🤖 Bot", bot_reply))
 
-
-
+# Tampilkan riwayat chat
+for speaker, msg in st.session_state.chat_history:
+    st.markdown(f"**{speaker}:** {msg}")
