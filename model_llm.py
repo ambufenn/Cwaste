@@ -2,6 +2,10 @@ from transformers import pipeline
 
 # Buat pipeline-nya
 pipe = pipeline(
+from transformers import pipeline
+
+# Inisialisasi pipeline sekali
+pipe = pipeline(
     "text-generation",
     model="HuggingFaceH4/zephyr-7b-beta",
     max_new_tokens=128,
@@ -10,9 +14,10 @@ pipe = pipeline(
 )
 
 def get_bot_reply(user_input, history=None):
-    # Gabungkan history kalau ada (belum pakai memory permanen ya)
+    # History belum dipakai di sini, tapi bisa dikembangkan nanti
     prompt = user_input
     response = pipe(prompt)
     reply_text = response[0]['generated_text'].replace(prompt, '').strip()
     return reply_text, history
+
 
