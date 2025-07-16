@@ -18,25 +18,27 @@ if uploaded_file:
 '''
 
 #only for llm
-import streamlit as st
-from model_llm import get_bot_reply
+import os
+from huggingface_hub import InferenceClient
 
-st.set_page_config(page_title="Chatbot Sampah", page_icon="♻️")
+hf_token = os.getenv("HF_TOKEN")
+client = InferenceClient(provider="fireworks-ai", api_key=hf_token)
 
-st.title("💬 Chatbot Sampah")
-st.write("Tanya apa saja soal sampah, daur ulang, atau lingkungan!")
+def get_bot_reply(user_input, chat_history=None):
+    messages = []
 
-# Simpan riwayat percakapan
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = None
+    # History (jika mau disimpan, bisa pakai st.session_state nanti)
+    if chat_history:
+        messages.extend(chat_history)
 
-user_input = st.text_input("Tanya ke bot:")
+    messages.append({"role": "user", "content": user_input})
 
-if user_input:
-    try:
-        bot_reply, updated_history = get_bot_reply(user_input, st.session_state.chat_history)
-        st.session_state.chat_history = updated_history
-        st.markdown(f"**🤖 Bot:** {bot_reply}")
-    except Exception as e:
-        st.error(f"Terjadi error di chatbot: {e}")
+    completion = client.chat.completions.create(
+        model="meta-llama/Llama-3.1-8B-Instruct",
+        messages=messages,
+    )
+
+    reply = completion.choices[0].message.content
+    return reply, messages + [{"role": "assistant", "content": reply}]
+
 
