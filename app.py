@@ -18,7 +18,7 @@ if uploaded_file:
 '''
 
 #only for llm
-
+'''
 import streamlit as st
 from model_llm import get_bot_reply
 
@@ -42,3 +42,64 @@ if user_input:
 # Tampilkan riwayat obrolan
 for speaker, text in st.session_state.chat_history:
     st.markdown(f"**{speaker}:** {text}")
+'''
+
+#we try use html
+
+import streamlit as st
+from PIL import Image
+import tempfile
+
+from model_vlm import classify_image_from_file
+from model_llm import get_bot_reply
+
+hf_token = st.secrets["HF_TOKEN"]  # dari secrets
+
+st.set_page_config(page_title="Sampah Bercuan", layout="centered")
+menu = st.selectbox("Menu", ["Main", "Coin", "History"])
+
+# === MAIN PAGE ===
+if menu == "Main":
+    st.header("Upload Trash Image")
+    uploaded_file = st.file_uploader("Upload image of trash", type=["jpg", "png", "jpeg"])
+    if uploaded_file:
+        img = Image.open(uploaded_file)
+        st.image(img, caption="Uploaded Image", use_column_width=True)
+
+        # Simpan sementara dan klasifikasikan
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp:
+            img.save(temp.name)
+            label = classify_image_from_file(temp.name, token=hf_token)
+            st.success(f"Detected: {label}")
+
+    # Chatbot
+    st.subheader("Ask About the Trash")
+    prompt = st.chat_input("Tanya ke chatbot")
+    if prompt:
+        reply = get_bot_reply(prompt)
+        with st.chat_message("user"):
+            st.write(prompt)
+        with st.chat_message("bot"):
+            st.write(reply)
+
+# === COIN PAGE ===
+elif menu == "Coin":
+    st.header("Your eWallet Balance")
+    st.markdown("_Coming soon..._ 💸")
+
+    st.subheader("Available Investments")
+    st.warning("Fitur investasi akan segera hadir...")
+
+# === HISTORY PAGE ===
+elif menu == "History":
+    st.header("Transaction History")
+    st.info("Transaksi akan ditampilkan setelah fitur aktif.")
+
+    st.subheader("Ask About History")
+    prompt = st.chat_input("Tanya tentang riwayatmu")
+    if prompt:
+        reply = get_bot_reply(prompt)
+        with st.chat_message("user"):
+            st.write(prompt)
+        with st.chat_message("bot"):
+            st.write(reply)
