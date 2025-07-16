@@ -25,12 +25,9 @@ from PIL import Image
 
 hf_token = st.secrets["HF_TOKEN"]
 
-# UI: Buat tab untuk pisahkan fitur
 tab1, tab2 = st.tabs(["🖼️ Klasifikasi Gambar", "💬 Chatbot Sampah"])
 
-# =====================
-# 🖼️ TAB 1: KLASIFIKASI
-# =====================
+# === TAB 1: KLASIFIKASI GAMBAR ===
 with tab1:
     st.header("Klasifikasi Sampah dari Gambar")
     uploaded_file = st.file_uploader("Upload gambar sampah")
@@ -42,15 +39,14 @@ with tab1:
             result = classify_image_from_file(temp.name, token=hf_token)
         st.success(f"Hasil klasifikasi: **{result}**")
 
-# =====================
-# 💬 TAB 2: CHATBOT
-# =====================
+# === TAB 2: CHATBOT ===
 with tab2:
     st.header("Tanya Bot tentang Sampah ♻️")
+
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
 
-    user_input = st.text_input("Tanyakan sesuatu ke bot (contoh: Apa itu sampah organik?)")
+    user_input = st.text_input("Tanya ke bot:")
 
     if user_input:
         bot_reply, updated_history = get_bot_reply(user_input, st.session_state.chat_history)
