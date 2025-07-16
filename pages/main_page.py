@@ -1,0 +1,28 @@
+import streamlit as st
+from PIL import Image
+import tempfile
+from model_vlm import classify_image_from_file
+from model_llm import get_bot_reply
+
+def run():
+    hf_token = st.secrets["HF_TOKEN"]
+
+    st.header("📸 Upload Gambar Sampah")
+    uploaded_file = st.file_uploader("Upload gambar (jpg/png)", type=["jpg", "jpeg", "png"])
+    if uploaded_file:
+        img = Image.open(uploaded_file)
+        st.image(img, caption="Gambar yang Diupload", use_column_width=True)
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp:
+            img.save(temp.name)
+            label = classify_image_from_file(temp.name, token=hf_token)
+        st.success(f"♻️ Jenis Sampah Terdeteksi: **{label}**")
+
+    st.subheader("🤖 Tanya Soal Sampah")
+    prompt = st.chat_input("Tulis pertanyaanmu...")
+    if prompt:
+        reply = get_bot_reply(prompt)
+        with st.chat_message("user"):
+            st.write(prompt)
+        with st.chat_message("bot"):
+            st.write(reply)
