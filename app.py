@@ -53,53 +53,61 @@ import tempfile
 from model_vlm import classify_image_from_file
 from model_llm import get_bot_reply
 
-hf_token = st.secrets["HF_TOKEN"]  # dari secrets
+hf_token = st.secrets["HF_TOKEN"]
 
 st.set_page_config(page_title="Sampah Bercuan", layout="centered")
+
+# CSS style for HTML
+st.markdown("""
+    <style>
+        .section { margin-top: 30px; }
+        .chat-message { margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .user { background-color: #d9fdd3; }
+        .bot { background-color: #f0f0f0; }
+    </style>
+""", unsafe_allow_html=True)
+
 menu = st.selectbox("Menu", ["Main", "Coin", "History"])
 
-# === MAIN PAGE ===
+# === MAIN ===
 if menu == "Main":
-    st.header("Upload Trash Image")
-    uploaded_file = st.file_uploader("Upload image of trash", type=["jpg", "png", "jpeg"])
+    st.markdown("## 🖼️ Upload Trash Image")
+
+    uploaded_file = st.file_uploader("Upload image of trash", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         img = Image.open(uploaded_file)
         st.image(img, caption="Uploaded Image", use_column_width=True)
 
-        # Simpan sementara dan klasifikasikan
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp:
             img.save(temp.name)
             label = classify_image_from_file(temp.name, token=hf_token)
-            st.success(f"Detected: {label}")
+        st.success(f"🧠 Detected: **{label}**")
 
-    # Chatbot
-    st.subheader("Ask About the Trash")
+    # === CHAT ===
+    st.markdown('<div class="section"><h3>🤖 Ask About the Trash</h3></div>', unsafe_allow_html=True)
     prompt = st.chat_input("Tanya ke chatbot")
     if prompt:
-        reply = get_bot_reply(prompt)
+        response = get_bot_reply(prompt)
         with st.chat_message("user"):
-            st.write(prompt)
+            st.markdown(f'<div class="chat-message user">🧍 {prompt}</div>', unsafe_allow_html=True)
         with st.chat_message("bot"):
-            st.write(reply)
+            st.markdown(f'<div class="chat-message bot">🤖 {response}</div>', unsafe_allow_html=True)
 
-# === COIN PAGE ===
+# === COIN ===
 elif menu == "Coin":
-    st.header("Your eWallet Balance")
-    st.markdown("_Coming soon..._ 💸")
+    st.markdown("## 💰 Your eWallet Balance")
+    st.info("Fitur ini sedang dikembangkan.")
 
-    st.subheader("Available Investments")
-    st.warning("Fitur investasi akan segera hadir...")
-
-# === HISTORY PAGE ===
+# === HISTORY ===
 elif menu == "History":
-    st.header("Transaction History")
+    st.markdown("## 🕘 Transaction History")
     st.info("Transaksi akan ditampilkan setelah fitur aktif.")
 
-    st.subheader("Ask About History")
+    st.markdown('<div class="section"><h3>🧾 Ask About History</h3></div>', unsafe_allow_html=True)
     prompt = st.chat_input("Tanya tentang riwayatmu")
     if prompt:
-        reply = get_bot_reply(prompt)
+        response = get_bot_reply(prompt)
         with st.chat_message("user"):
-            st.write(prompt)
+            st.markdown(f'<div class="chat-message user">🧍 {prompt}</div>', unsafe_allow_html=True)
         with st.chat_message("bot"):
-            st.write(reply)
+            st.markdown(f'<div class="chat-message bot">🤖 {response}</div>', unsafe_allow_html=True)
