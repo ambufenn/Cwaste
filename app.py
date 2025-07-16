@@ -45,19 +45,20 @@ for speaker, text in st.session_state.chat_history:
 '''
 
 #we try use html gabung 3 halaman
+
 import streamlit as st
-from pages import main_page, coin_page, history_page
 
 st.set_page_config(page_title="Sampah Bercuan", layout="centered")
 
-menu = st.selectbox("📂 Pilih Halaman", ["Main", "Coin", "History"])
+st.title("👋 Selamat Datang di Sampah Bercuan")
 
-if menu == "Main":
-    main_page.run()
-elif menu == "Coin":
-    coin_page.run()
-elif menu == "History":
-    history_page.run()
+st.markdown("""
+Pilih menu di sidebar untuk:
+- 📷 Mengklasifikasikan sampah
+- 💸 Melihat saldo eWallet & investasi
+- 🧾 Cek riwayat transaksi
 
+Silakan mulai dari menu **Main** di sidebar kiri.
+""")
 
 
