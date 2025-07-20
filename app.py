@@ -1,5 +1,5 @@
 #only for vlm show
-'''
+
 import streamlit as st
 from model_vlm import classify_image_from_file
 import tempfile
@@ -15,10 +15,10 @@ if uploaded_file:
         result = classify_image_from_file(temp.name, token=hf_token)
     st.write(f"Hasil klasifikasi: {result}")
 
-'''
+
 
 #only for llm
-'''
+
 import streamlit as st
 from model_llm import get_bot_reply
 
@@ -42,7 +42,7 @@ if user_input:
 # Tampilkan riwayat obrolan
 for speaker, text in st.session_state.chat_history:
     st.markdown(f"**{speaker}:** {text}")
-'''
+
 
 #we try use html gabung 3 halaman
 
